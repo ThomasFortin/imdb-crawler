@@ -2,7 +2,12 @@ IMDb Crawling
 
 Short description
 -----------------
-IMDb crawling of top 250 series for a Master degree project.
+
+IMDb crawling of top 250 series for a Master degree project. 
+
+In this project, I am crawling the IMDb Top 250 TV Shows and put the data in a MongoDB.
+
+After that, I call this data with a NodeJS server and finally print it with D3JS.
 
 What is used ?
 -----------------

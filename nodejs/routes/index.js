@@ -9,7 +9,12 @@ router.get('/', (req, res) => {
             tvshows: tvshows,
             title: 'TV Shows : Top 50'
         });
-        console.log(tvshows);
+    });
+});
+
+router.get('/api/tvshows', (req, res) => {
+    mongodb.getTVShows().then((tvshows) => {
+        res.json(tvshows);
     });
 });
 
