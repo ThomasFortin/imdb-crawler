@@ -1,0 +1,99 @@
+# -*- coding: utf-8 -*-
+
+import scrapy
+import re
+from project.items import TVShowItem, CastItem
+
+class imdbtvshowsSpider(scrapy.Spider):
+    name = "imdbtvshows"
+    allowed_domains = ["imdb.com"]
+    start_urls = [
+        "http://www.imdb.com/chart/toptv"
+    ]
+
+    def parse(self, response):
+        # On ne prend pas les 250 mais on s'arrête aux 100 meilleures séries (ce qui est déjà long)
+        self.max = 50
+        for selection in response.xpath("//*[contains(@class, 'chart')]/tbody/tr"):
+            item = TVShowItem()
+            item['Title'] = selection.xpath('td[2]/a/text()').extract()[0]
+            # On ne souhaite qu'une partie de ce qui se trouve à cet endroit atteint avec xPath, puis on convertit le résultat en string et on supprime les espaces/sauts de lignes indésirables
+            item['Ranking'] = re.match(r'(^[0-9]+)',selection.xpath('td[2]/text()').extract()[0].__str__().strip()).group(1)
+            item['Rating'] = selection.xpath('td[3]/strong/text()').extract()[0]
+            item['ReleaseDate'] = selection.xpath('td[2]/span[1]/text()').re(r'\d+')[0]
+            item['PageUrl'] = 'http://www.imdb.com' + selection.xpath('td[2]/a/@href').extract()[0]
+
+            request = scrapy.Request(item['PageUrl'], callback=self.parseTVShowDetails)
+            request.meta['item'] = item
+            # On vérifie qu'on n'a pas atteint le nombre max de séries attendu
+            if(int(item['Ranking']) >= self.max + 1):
+                return
+
+            yield request
+
+
+    # Fonction pour parser tous les détails d'une série
+    def parseTVShowDetails(self, response):
+        # Les détails d'une série sont constitués des infos basiques, techniques et du casting, donc en envoie vers ces fonctions une par une
+        item = response.meta['item']
+        item = self.getBasicInfo(item, response)
+        item = self.getTechnicalInfo(item, response)
+        item = self.getCastMemberInfo(item, response)
+
+        return item
+
+
+    # Fonction pour obtenir les informations "basiques" d'une série
+    def getBasicInfo(self, item, response):
+        item['Creators'] = response.xpath("//div/span[@itemprop='creator']/a/span/text()").extract()
+        # On ne souhaite pas tout ce qui se trouve dans le p, mais seulement la partie Synopsis même (sans le em à la fin dans certains cas). Puis on strip pour enlever le \n du début et les espaces à la fin
+        item['Synopsis'] = response.xpath("//div[@itemprop='description']/p/text()").extract()[0].strip()
+        item['Genres'] = response.xpath("//div[@itemprop='genre']/a/text()").extract()
+
+        return item
+
+
+    # Fonction pour récupérer les membres du casting de la série
+    def getCastMemberInfo(self, item, response):
+        # CastMembers correspond à un tableau (pour le moment vide)
+        item['CastMembers'] = []
+        for index, castMember in enumerate(response.xpath("//*[@id='titleCast']/table/tr")):
+            # Le premier tr correspond à la phrase au dessus du tableau du casting donc on ne le compte pas
+            if (index == 0):
+                continue
+
+            cast = CastItem()
+            cast['ActorName'] = self.ifNotEmptyGetIndex(castMember.xpath("td[@itemprop='actor']/a/span[@itemprop='name']/text()").extract())
+            cast['CharacterName'] = self.ifNotEmptyGetIndex(castMember.xpath("td[@class='character']/div/a/text()").extract())
+
+            # On ajoute le membre du casting créé à notre tableau des membres du casting
+            item['CastMembers'].append(cast)
+
+        return item
+
+
+    # Fonction pour trouver les informations techniques de la série (ici, on ne s'intéresse qu'à la langue)
+    def getTechnicalInfo(self, item, response):
+        for index, details in enumerate(response.xpath("//*[@id='titleDetails']/div")):
+            """
+            Si un de ces détails techniques existe, il est précédé d'un h4 disant ce que c'est
+            Par exemple : "Country: USA"
+            """
+            titleDetails = details.xpath('h4/text()').extract()
+            # On vérifie que l'information que l'on souhaite est bien renseignée pour éviter une erreur
+            if (titleDetails):
+                # Les id xpath commencent à 1 et non à 0
+                index += 1
+                # item = self.mapTVShowDetails(response, self.ifNotEmptyGetIndex(titleDetails), item, index)
+                if ('Country' in titleDetails):
+                    item['Country'] = self.ifNotEmptyGetIndex(response.xpath("//*[@id='titleDetails']/div/[" + str(index) + "]/a/text()").extract())
+
+            return item
+
+
+    # Fonction pour vérifier que ce n'est pas vide
+    def ifNotEmptyGetIndex(self, item, index = 0):
+        if item:
+            return item[index]
+        else:
+            return item
