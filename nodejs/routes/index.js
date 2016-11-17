@@ -7,7 +7,7 @@ router.get('/', (req, res) => {
     mongodb.getTVShows().then((tvshows) => {
         res.render('index', {
             tvshows: tvshows,
-            title: 'TV Shows : Top 50'
+            title: 'TV Shows : IMDb top 50'
         });
     });
 });

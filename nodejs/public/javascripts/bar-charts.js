@@ -68,7 +68,6 @@ d3.json("api/tvshows", function(error, data) {
                 .style("top", (d3.event.pageY + 30) + "px");
 		})
 		.on("mouseout", function(d) {
-            tip.hide;
 			d3.selectAll(".details").remove();
             tooltip.transition()
                 .duration(300)
@@ -95,12 +94,12 @@ d3.json("api/tvshows", function(error, data) {
 		.append("text")
         .transition().duration(0)
 		.delay(function(d, i) { return 2000 + (i * 100); })
-		.text(function(d) { return d.Rating + "\n☆"; })
+		.text(function(d) { return d.Rating + "★"; })
 			// Affichage & positionnement du titre du film en dessous de la barre correspondante
 			.attr("x", function(d) { return xScale(d.Title) + xScale.rangeBand()/2; })
 			// Affichage & positionnement de la note sur sa barre
 			.attr("y", function(d) { return yScale(nbWithoutCommas(d.NbVotes)) - 10; })
-				.style("fill", "black")
+				.style("fill", "#000")
 				.style("font-weight", "bold")
 				.style("text-anchor", "middle")
                 .style("font-size", "10px");
