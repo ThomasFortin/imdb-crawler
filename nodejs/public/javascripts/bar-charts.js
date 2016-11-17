@@ -10,10 +10,11 @@ var svg = d3.select("body")
 	.append("g")
 		.attr("transform", "translate(" + margin.left + ", " + margin.right + ")");
 
-// Definition des x et y
+// Definition du scale de x
 var xScale = d3.scale.ordinal()
 	.rangeRoundBands([0,width], 0.2, 0.2);
 
+// Définition du scale de y
 var yScale = d3.scale.linear()
 	.range([height, 0]);
 
@@ -67,6 +68,7 @@ d3.json("api/tvshows", function(error, data) {
                 .style("top", (d3.event.pageY + 30) + "px");
 		})
 		.on("mouseout", function(d) {
+            tip.hide;
 			d3.selectAll(".details").remove();
             tooltip.transition()
                 .duration(300)
@@ -91,14 +93,17 @@ d3.json("api/tvshows", function(error, data) {
 		.data(data)
 		.enter()
 		.append("text")
-		// .text(function(d) { return d.Rating; })
+        .transition().duration(0)
+		.delay(function(d, i) { return 2000 + (i * 100); })
+		.text(function(d) { return d.Rating + "\n☆"; })
 			// Affichage & positionnement du titre du film en dessous de la barre correspondante
-			// .attr("x", function(d) { return xScale(d.Title) + xScale.rangeBand()/2; });
-			// Affchage & positionnement de la note sur sa barre
-			// .attr("y", function(d) { return yScale(parseInt(d.NbVotes)) + 20; })
-			// 	.style("fill", "white")
-			// 	.style("font-weight", "bold")
-			// 	.style("text-anchor", "middle");
+			.attr("x", function(d) { return xScale(d.Title) + xScale.rangeBand()/2; })
+			// Affichage & positionnement de la note sur sa barre
+			.attr("y", function(d) { return yScale(nbWithoutCommas(d.NbVotes)) - 10; })
+				.style("fill", "black")
+				.style("font-weight", "bold")
+				.style("text-anchor", "middle")
+                .style("font-size", "10px");
 
 	// On fait le xAxis
 	// On fait le transform pour que les noms soient bien en bas
