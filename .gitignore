@@ -2,3 +2,4 @@ scrapy.cfg
 nodejs/node_modules
 nodejs/src/config
 nodejs/src/config/
+*.pyc
