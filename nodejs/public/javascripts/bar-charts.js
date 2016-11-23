@@ -85,7 +85,7 @@ d3.json("api/tvshows", function(error, data) {
 			"height": function(d) { return height - yScale(nbWithoutCommas(d.nbVotes)); }
 		})
 		// Pour le dégradé des couleurs
-		.style("fill", function(d, i) { return "rgb(120, 20, " + (( i * 4) + 15) + ")" })
+		// .style("fill", function(d, i) { return "rgb(120, 20, " + (( i * 4) + 15) + ")" })
 		.style("cursor", "pointer");
 
 	svg.selectAll("text")
@@ -124,10 +124,11 @@ d3.json("api/tvshows", function(error, data) {
 		    .attr("class", "y axis")
 		    .call(yAxis)
         .append("text")
-            .attr("y", 12)
+            .text("Nombre de votes")
+            .attr("y", 14)
             .attr("text-anchor", "end")
             .attr("transform", "rotate(-90)")
-            .text("Nombre de votes");
+			.style("font-weight", "bold")
 });
 
 function nbWithoutCommas(x) {

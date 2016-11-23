@@ -5,7 +5,7 @@
 }
 
 header {
-    background-color: rgb(120, 20, 23);
+    background-color: #0069C4;
     margin-bottom: 50px;
     box-shadow: 0px 3px 5px 0px #000; 
 }
@@ -41,6 +41,16 @@ h2::before {
 
 h2::after {
 	content : ' –';
+}
+
+.bar {
+    fill: #0069C4;
+}
+
+.bar:hover {
+    fill: #3C3C3C;
+    transition: 0.5s;
+    border: 10px solid #3C3C3C;
 }
 
 .links-div {
