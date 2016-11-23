@@ -43,38 +43,31 @@ h2::after {
 	content : ' –';
 }
 
+.links-div {
+    margin: auto;
+    display: flex;
+    flex-flow: row;
+    width: 75%;
+    padding: 20px;
+}
+
+.single-link {
+    width: 50%;
+    text-align: center;
+    text-decoration: none;
+    font-size: 20px;
+    padding: 20px;
+    color: #f9f9f9;
+    background-color: rgb(120, 20, 23);
+    cursor: pointer;
+    border: 1px solid #f9f9f9;
+}
+
 .axis path,
 .axis line {
 	fill: none;
 	stroke: #000;
 	shape-rendering: crispEdges;
-}
-
-.d3-tip {
-    line-height: 1;
-    font-weight: bold;
-    padding: 10px;
-    background-color: rgba(0, 0, 0, 0.8);
-    color: #fff;
-    border-radius: 2px;
-}
-
-.d3-tip:after {
-    box-sizing: border-box;
-    display: inline;
-    font-size: 10px;
-    width: 100%;
-    line-height: 1;
-    color: rgba(0, 0, 0, 0.8);
-    content: "\25BC";
-    position: absolute;
-    text-align: center;
-}
-
-.d3-tip.n:after {
-    margin: 1px 0 0 0;
-    top: 100%;
-    left: 0;
 }
 
 div.tooltip {
@@ -93,3 +86,6 @@ div.tooltip {
     box-shadow: 5px 5px 5px 0px #696969;
 }
 
+div.tooltip>* {
+    margin: 10px auto;
+}

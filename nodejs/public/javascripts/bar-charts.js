@@ -39,11 +39,11 @@ d3.json("api/tvshows", function(error, data) {
 	
 	// On range les résultats par ordre décroissant
 	data.sort(function(a,b) {
-		return a.Ranking - b.Ranking;
+		return a.ranking - b.ranking;
 	});
 
 	// Sur l'axe des abcisses, on souhaite afficher les titres
-	xScale.domain(data.map(function(d) { return d.Title; }) );
+	xScale.domain(data.map(function(d) { return d.title; }) );
 	// Sur l'axe des ordonnées on affiche des entiers de 0 à 10 correspondant aux notes
 	yScale.domain([0, 1100000]);
 
@@ -53,13 +53,13 @@ d3.json("api/tvshows", function(error, data) {
 		.enter()
 		.append("rect")
         .on("click", function(d) {
-			var win = window.open(d.PageUrl, '_blank');
+			var win = window.open(d.pageUrl, '_blank');
 		})
 		.on("mouseover", function(d) {
-            var details = "<h2>#" + d.Ranking + " " + d.Title + " (" + d.ReleaseDate + ")</h2>";
-            details += "<p>By : " + d.Creators + "</p>";
-            details += "<p>Genres : " + d.Genres + "</p>";
-            details += "<p>" + d.Synopsis.substring(0,150) + "...</p>";
+            var details = "<h2>#" + d.ranking + " " + d.title + " (" + d.releaseDate + ")</h2>";
+            details += "<p>By : " + d.creators + "</p>";
+            details += "<p>Genres : " + d.genres + "</p>";
+            details += "<p>" + d.synopsis.substring(0,200) + "...</p>";
             tooltip.transition()
                 .duration(500)
                 .style("opacity", .8);
@@ -79,10 +79,10 @@ d3.json("api/tvshows", function(error, data) {
 		.transition().duration(2000)
 		.delay(function(d, i) { return i * 100; })
 		.attr({
-			"x": function(d) { return xScale(d.Title); },
-			"y": function(d) { return yScale(nbWithoutCommas(d.NbVotes)); },
+			"x": function(d) { return xScale(d.title); },
+			"y": function(d) { return yScale(nbWithoutCommas(d.nbVotes)); },
 			"width": xScale.rangeBand(),
-			"height": function(d) { return height - yScale(nbWithoutCommas(d.NbVotes)); }
+			"height": function(d) { return height - yScale(nbWithoutCommas(d.nbVotes)); }
 		})
 		// Pour le dégradé des couleurs
 		.style("fill", function(d, i) { return "rgb(120, 20, " + (( i * 4) + 15) + ")" })
@@ -94,11 +94,11 @@ d3.json("api/tvshows", function(error, data) {
 		.append("text")
         .transition().duration(0)
 		.delay(function(d, i) { return 2000 + (i * 100); })
-		.text(function(d) { return d.Rating + "★"; })
+		.text(function(d) { return d.rating + "★"; })
 			// Affichage & positionnement du titre du film en dessous de la barre correspondante
-			.attr("x", function(d) { return xScale(d.Title) + xScale.rangeBand()/2; })
+			.attr("x", function(d) { return xScale(d.title) + xScale.rangeBand()/2; })
 			// Affichage & positionnement de la note sur sa barre
-			.attr("y", function(d) { return yScale(nbWithoutCommas(d.NbVotes)) - 10; })
+			.attr("y", function(d) { return yScale(nbWithoutCommas(d.nbVotes)) - 10; })
 				.style("fill", "#000")
 				.style("font-weight", "bold")
 				.style("text-anchor", "middle")

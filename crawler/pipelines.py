@@ -12,13 +12,13 @@ class MongoDBPipeline(object):
     def from_crawler(cls, crawler):
         return cls(
             mongo_uri=crawler.settings.get('MONGODB_URI'),
-            mongo_db=crawler.settings.get('MONGODB_DATABASE', 'imdb')
+            mongo_db=crawler.settings.get('MONGODB_DATABASE', 'imdb-tvshows')
         )
 
     def open_spider(self, spider):
         self.client = pymongo.MongoClient(self.mongo_uri)
         self.db = self.client[self.mongo_db]
-	# self.db.authenticate(crawler.settinfs.get('MONGODB_USER'), crawler.settinfs.get('MONGODB_PWD'))
+	# self.db.authenticate(crawler.settings.get('MONGODB_USER'), crawler.settinfs.get('MONGODB_PWD'))
 
     def close_spider(self, spider):
         self.client.close()

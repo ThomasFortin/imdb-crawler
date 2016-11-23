@@ -33,7 +33,7 @@ ITEM_PIPELINES = {
 # Identifiants de connexion
 MONGODB_SERVER = "127.0.0.1"
 MONGODB_PORT = 27017
-MONGODB_DB = "imdb"
+MONGODB_DB = "imdb-tvshows"
 MONGODB_COLLECTION = "tvshows"
 
 # Sert à éviter le <url error timed out>

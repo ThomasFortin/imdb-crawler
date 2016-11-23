@@ -1,7 +1,7 @@
 const mongodb = require('mongodb');
 const config = require('./config/mongo.json');
 
-let url = 'mongodb://localhost:27017/imdb';
+let url = 'mongodb://localhost:27017/imdb-tvshows';
 let MongoClient = mongodb.MongoClient;
 
 const obj = {
